@@ -87,8 +87,8 @@ I'd want real usage data and trader feedback to answer these, not just my own re
 
 ## Links
 
-- Loom walkthrough: [link]
-- One-page deck: [link]
+- Loom walkthrough: https://www.loom.com/share/bf0f1e4be62441dbb5255b648ab1ff17
+- One-page deck: [deck.pdf](./deck.pdf)
 
 ---
 
