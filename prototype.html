@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plan before trade – concept prototype</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#fff;--text:#111;--muted:#6b6b6b;--border:#e4e4e4;--card:#f5f5f5;--accent:#B0287F;--accent-bg:#fbeaf4;--btn:#111;--btn-text:#fff;--err:#c62f2f;--ok:#2e8b57}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111;--text:#f2f2f2;--muted:#a0a0a0;--border:#2e2e2e;--card:#1c1c1c;--accent:#e0589f;--accent-bg:#3a1830;--btn:#f2f2f2;--btn-text:#111;--err:#f06a6a;--ok:#5cc08a}}
+:root[data-theme="dark"]{--bg:#111;--text:#f2f2f2;--muted:#a0a0a0;--border:#2e2e2e;--card:#1c1c1c;--accent:#e0589f;--accent-bg:#3a1830;--btn:#f2f2f2;--btn-text:#111;--err:#f06a6a;--ok:#5cc08a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Google Sans","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:430px;margin:0 auto;min-height:100vh;padding:0 20px 28px;position:relative}
+.scr{display:none}.scr.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;height:56px}
+.ib{background:none;border:none;color:var(--text);padding:8px;margin-left:-8px;cursor:pointer;display:flex}
+.av{width:84px;height:84px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:34px;margin:8px auto 10px}
+.nm{text-align:center;font-size:22px;letter-spacing:.3px}
+.pill{display:block;margin:10px auto 22px;background:var(--card);border:none;color:var(--text);border-radius:20px;padding:8px 16px;font:inherit;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{border:1px solid var(--border);border-radius:22px;padding:16px 6px;text-align:center;font-size:14px}
+.tile small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.sec{color:var(--muted);font-size:15px;margin:26px 4px 10px}
+.list{border:1px solid var(--border);border-radius:24px;padding:0 18px}
+.row{display:flex;align-items:center;gap:14px;padding:16px 0;border:none;border-bottom:1px solid var(--border);background:none;width:100%;color:var(--text);text-align:left;font:inherit;cursor:pointer}
+.row:last-child{border-bottom:none}
+.row .t{flex:1;min-width:0}
+.row b{font-weight:500;font-size:16px;display:flex;align-items:center;gap:8px}
+.row span.s{display:block;color:var(--muted);font-size:13.5px;margin-top:2px;line-height:1.35}
+.new{background:var(--accent);color:#fff;font-size:10px;font-weight:500;border-radius:6px;padding:2px 6px;letter-spacing:.3px}
+.act{color:var(--accent)!important}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:6px}
+.foot{color:var(--muted);font-size:11.5px;text-align:center;margin-top:22px;line-height:1.5}
+.prog{display:flex;gap:6px;margin:4px 0 26px}.prog i{flex:1;height:3px;border-radius:2px;background:var(--border)}.prog i.d{background:var(--text)}
+.kick{color:var(--accent);font-size:13px;font-weight:500;margin:0 0 6px}
+h1{font-size:25px;font-weight:500;line-height:1.25;margin:0 0 8px}
+.sub{color:var(--muted);font-size:14.5px;line-height:1.5;margin:0 0 22px}
+.amt{display:flex;align-items:center;border:1px solid var(--border);border-radius:18px;padding:0 18px;height:64px}
+.amt:focus-within{border-color:var(--text)}
+.amt span{font-size:26px;color:var(--muted);margin-right:6px}
+.amt input{flex:1;min-width:0;border:none;background:none;outline:none;color:var(--text);font:inherit;font-size:26px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{border:1px solid var(--border);background:none;color:var(--text);border-radius:20px;padding:9px 16px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.err{color:var(--err);font-size:13.5px;margin-top:12px;min-height:18px;line-height:1.4}
+.note{background:var(--card);border-radius:18px;padding:14px 16px;font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:16px}
+.note b{color:var(--text);font-weight:500}
+.card{border:1px solid var(--border);border-radius:22px;padding:18px}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.kv .big{font-size:26px;font-weight:500}
+.cta{display:block;width:100%;background:var(--btn);color:var(--btn-text);border:none;border-radius:30px;padding:17px;font:inherit;font-size:16px;font-weight:500;margin-top:26px;cursor:pointer}
+.cta.ghost{background:none;color:var(--text);border:1px solid var(--border);margin-top:10px}
+.lnk{background:none;border:none;color:var(--accent);font:inherit;font-size:13.5px;padding:0;cursor:pointer}
+.rv{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--border);font-size:15px;gap:10px}
+.rv:last-of-type{border-bottom:none}.rv span{color:var(--muted)}.rv div{text-align:right}
+.sw{display:flex;align-items:center;gap:14px;margin-top:16px}
+.sw .t{flex:1;font-size:14px;line-height:1.4}.sw .t small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.tg{position:relative;width:46px;height:28px;flex:none}
+.tg input{opacity:0;position:absolute;inset:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:1}
+.tg b{position:absolute;inset:0;border-radius:14px;background:var(--border);transition:background .2s}
+.tg b:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
+.tg input:checked+b{background:var(--accent)}.tg input:checked+b:after{transform:translateX(18px)}
+.ok{width:64px;height:64px;border-radius:50%;background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;margin:40px auto 18px}
+.center{text-align:center}
+.app{padding-bottom:100px}
+.hdr{display:flex;gap:10px;align-items:center;height:64px}
+.logo{width:44px;height:44px;border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:20px;flex:none}
+.search{flex:1;border:1px solid var(--border);border-radius:24px;height:44px;display:flex;align-items:center;padding:0 16px;color:var(--muted);font-size:15px}
+.circ{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text);font-size:18px;cursor:pointer;flex:none}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--border);margin:6px 0 16px;font-size:16px;color:var(--muted)}
+.tabs span{padding:8px 0}.tabs .a{color:var(--text);border-bottom:2px solid var(--text)}
+.idx{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px}
+.ic{flex:none;min-width:150px;border:1px solid var(--border);border-radius:20px;padding:12px 14px;font-size:13px}
+.ic b{display:block;font-weight:500;font-size:18px;margin:4px 0 1px}
+.g{color:#1e9e5a}.r{color:#d63b3b}
+.hs{border:1px solid var(--border);border-radius:20px;padding:14px 16px;margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--card)}
+.hs .h-t{flex:1}.hs b{display:block;font-weight:500;font-size:15px}.hs span{color:var(--muted);font-size:13px;line-height:1.4;display:block;margin-top:2px}
+.mbar{height:6px;border-radius:3px;background:var(--border);margin-top:8px;overflow:hidden}.mbar i{display:block;height:100%;background:var(--accent)}
+.h-o{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;border-bottom:1px solid var(--border);padding:14px 0;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.h-o b{font-weight:500;font-size:15px;display:block}.h-o small{color:var(--muted);font-size:12.5px}
+.h-o div:last-child{text-align:right;font-size:15px}
+.nv{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+.nv button{background:none;border:none;color:var(--muted);font:inherit;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px}
+.nv button i{font-style:normal;font-size:20px;line-height:22px}.nv button.on{color:var(--text);font-weight:500}
+.rb{height:10px;border-radius:5px;background:var(--border);display:flex;overflow:hidden;position:relative;margin:10px 0 6px}
+.rb i{display:block;height:100%}
+.rb u{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--text)}
+.lg{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}.lg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+.ttl{font-family:Georgia,serif;font-size:34px;font-weight:400;margin:14px 0 14px}
+.pc{border:1px solid var(--border);border-radius:20px;padding:14px 16px;margin-top:12px}
+.pc .kv b{font-weight:500;font-size:16px}.pc .m{color:var(--muted);font-size:13px;margin-top:4px}
+.pc .chip{margin-top:10px;padding:7px 16px}
+.empty{text-align:center;color:var(--muted);padding:70px 0;font-size:17px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:11px 16px;border-radius:14px;font-size:13.5px;max-width:340px;text-align:center;z-index:9;display:none}
+.sl{width:100%;accent-color:var(--accent)}
+.pph{display:flex;align-items:center;gap:10px;font-family:Georgia,serif;font-size:27px;font-weight:400;margin:0}
+.gauge{margin:22px 0 4px}
+.glab{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.gtr{position:relative;height:30px;margin:10px 0 2px}
+.gtr .bar{position:absolute;top:12px;left:0;right:0;height:6px;border-radius:3px;background:var(--border)}
+.gtr .fill{position:absolute;top:12px;height:6px;border-radius:3px}
+.gtr .end{position:absolute;top:6px;width:3px;height:18px;border-radius:2px}
+.gtr .mk{position:absolute;top:2px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.gtr .mk i{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--text)}
+.gtr .mk u{width:2px;height:17px;background:var(--text)}
+.gval{display:flex;justify-content:space-between;font-size:15px}
+.ppc{border:1px solid var(--border);border-radius:22px;padding:18px;margin-top:14px}
+.ppc .hd{display:flex;justify-content:space-between;align-items:center}
+.ppc .hd b{font-weight:500;font-size:17px}
+.ppr{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px;font-size:15px}
+.nb{border:1px solid var(--border);border-radius:16px;height:52px;display:flex;align-items:center;padding:0 16px;gap:8px;width:170px;flex:none}
+.nb span{color:var(--muted);font-size:15px}
+.nb input{flex:1;min-width:0;border:none;background:none;outline:none;color:var(--text);font:inherit;font-size:19px;text-align:right}
+.cbx{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:15px;cursor:pointer}
+.cbx input{width:24px;height:24px;accent-color:var(--accent);margin:0;flex:none}
+.info{border:1px solid var(--border);border-radius:18px;padding:16px 18px;margin-top:16px;color:var(--muted);font-size:13.5px;line-height:1.55}
+.info div{display:flex;gap:9px}.info div+div{margin-top:10px}
+.sgm{display:inline-flex;background:var(--card);border-radius:22px;padding:4px;flex:none}
+.sgm button{border:none;background:none;color:var(--muted);padding:7px 13px;border-radius:18px;font:inherit;font-size:13.5px;cursor:pointer}
+.sgm button.on{background:var(--bg);color:var(--text);box-shadow:0 0 0 1px var(--border)}
+.sg{display:inline-flex;background:var(--card);border-radius:26px;padding:4px}
+.sg button{border:none;background:none;color:var(--muted);padding:9px 18px;border-radius:22px;font:inherit;font-size:16px;cursor:pointer}
+.sg.d button{padding:11px 26px;font-size:18px}
+.sg.d button.on{background:var(--text);color:var(--bg)}
+.sg.w button.on{background:var(--bg);color:var(--text);box-shadow:0 0 0 1px var(--border)}
+.fr{display:flex;justify-content:space-between;align-items:center;margin:20px 0;color:var(--muted);font-size:17px}
+.fr b{color:var(--text);font-weight:500}
+.stp{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:36px;padding:8px 20px;width:230px;color:var(--text)}
+.stp button{background:none;border:none;color:var(--text);font-size:26px;cursor:pointer;padding:4px 6px}
+.stp div{text-align:center;line-height:1.15}.stp b{font-size:21px;font-weight:500;display:block;color:var(--text)}.stp small{font-size:12.5px;color:var(--muted)}
+.pin{width:230px;text-align:right;border:1px solid var(--border);border-radius:18px;padding:14px 20px;font:inherit;font-size:22px;background:none;color:var(--text)}
+.slc{border:1px solid var(--border);border-radius:22px;padding:16px 18px;margin-top:8px}
+.slb{background:#fde4e4;color:#c62f2f;border-radius:10px;font-weight:500;font-size:15px;padding:9px 11px}
+.bpill{background:#e3f7ea;color:#1e8a52;border-radius:20px;padding:8px 16px;font-size:15px;font-weight:500}
+.ft{display:flex;justify-content:space-between;align-items:center;margin-top:18px;gap:12px}
+.ft div div{font-size:14px;color:var(--muted);line-height:1.6}.ft div div b{font-weight:500;color:var(--text)}
+.buy{background:#136f45;color:#fff;border:none;border-radius:30px;padding:16px 0;width:48%;font:inherit;font-size:18px;cursor:pointer}
+.bt{display:flex;justify-content:space-between;border-top:1px solid var(--border);margin-top:16px;padding-top:14px;font-size:12.5px;color:var(--muted)}
+.bt b{display:block;font-size:19px;font-weight:500;color:var(--text);margin-top:2px}.bt b.r{color:#d63b3b}.bt b.g{color:#1e9e5a}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section class="scr" id="s-profile">
+  <div class="top">
+    <button class="ib" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="ib" aria-label="Settings"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></button>
+  </div>
+  <div class="av">Y</div>
+  <div class="nm">YASH</div>
+  <button class="pill">Account details &nbsp;›</button>
+  <div class="tiles">
+    <div class="tile"><div style="font-size:22px;line-height:26px">₹</div>₹0.00<small>Funds</small></div>
+    <div class="tile"><div style="font-size:20px;line-height:26px">☊</div>Help<small>Contact support</small></div>
+    <div class="tile"><div style="font-size:20px;line-height:26px">▦</div>P&amp;L Calendar<small>Daily / Monthly</small></div>
+  </div>
+  <div class="sec">Trader’s controls</div>
+  <div class="list">
+    <button class="row"><div class="t"><b>Kill Switch</b><span class="s">Choose segments you would like to disable</span></div><span>›</span></button>
+    <button class="row" id="open-pp"><div class="t"><b>P&amp;L Protect</b><span class="s" id="pp-sub">Set stop, target levels on positions P&amp;L</span></div><span>›</span></button>
+    <button class="row" id="open-plan"><div class="t"><b>Plan before trade <span class="new" id="newtag">NEW</span></b><span class="s" id="plan-sub">Set your weekly risk cap and trade count before the market opens</span></div><span>›</span></button>
+    <button class="row"><div class="t"><b>Order Defaults</b><span class="s">Set auto SL/TP, default order types and quantity</span></div><span>›</span></button>
+    <button class="row"><div class="t"><b>Authorise sell orders</b><span class="s">Choose DDPI or T-PIN for holdings</span></div><span>›</span></button>
+  </div>
+  <p class="foot">Concept prototype for a product idea. Not affiliated with or built by SAHI. No real accounts or trades.</p>
+</section>
+
+<section class="scr" id="s-step">
+  <div class="top"><button class="ib" id="back" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span style="color:var(--muted);font-size:13px" id="stepno"></span></div>
+  <div class="prog" id="prog"><i></i><i></i><i></i></div>
+
+  <div class="st" data-i="0">
+    <p class="kick">Week of 16–20 Nov</p>
+    <h1>What’s your risk cap for the week?</h1>
+    <p class="sub">The most you’re comfortable giving up in a week. Set it now with a clear head, and it stays in front of you when the market gets noisy.</p>
+    <div class="amt"><span>₹</span><input id="wk" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+    <div class="chips" id="wk-chips"></div>
+    <div class="note">Your daily stop stays in P&amp;L Protect. This weekly cap works alongside it.</div>
+    <div class="err" id="e0"></div>
+  </div>
+
+
+  <div class="st" data-i="2" hidden>
+    <p class="kick">Week of 16–20 Nov</p>
+    <h1>How many fresh entries a day?</h1>
+    <p class="sub">Your entry budget for a day. Exits, square-offs and stop-loss orders never count against it.</p>
+    <div class="amt"><input id="mt" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div>
+    <div class="chips" id="mt-chips"></div>
+    <div class="err" id="e2"></div>
+  </div>
+
+  <div class="st" data-i="3" hidden>
+    <p class="kick">Week of 16–20 Nov</p>
+    <h1>Which days are you in?</h1>
+    <p class="sub">Switch off the days you plan to sit out.</p>
+    <div class="chips" id="days"></div>
+    <div class="err" id="e3"></div>
+  </div>
+
+  <button class="cta" id="next">Continue</button>
+</section>
+
+<section class="scr" id="s-review">
+  <div class="top"><button class="ib" id="rback" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+  <p class="kick">Week of 16–20 Nov</p>
+  <h1>Your plan for the week</h1>
+  <p class="sub">Your rules, set by you. Tighten them any time. Loosening them asks for a short pause to confirm.</p>
+  <div class="card" style="padding:6px 18px" id="rv"></div>
+  <div class="note"><b>At your entry limit,</b> new entries pause for the day. Exits and risk reduction always stay open, and you can edit the plan if something urgent comes up.</div><input type="checkbox" id="lock" checked hidden>
+  <div class="note">A planning aid, not a guarantee. It keeps your own limits in view; it can’t predict or prevent market losses.</div>
+  <button class="cta" id="commit">Lock in my plan</button>
+  <button class="cta ghost" id="rcancel">Not now</button>
+</section>
+
+<section class="scr on" id="s-home">
+  <div class="hdr"><div class="logo">S</div><div class="search">Search SAHI</div><button class="circ" id="to-prof" aria-label="Profile">&#9786;</button></div>
+  <div class="tabs"><span class="a">F&amp;O</span><span>Stocks</span><span>Commodities</span><span>IPO</span></div>
+  <div class="idx"><div class="ic">NIFTY50<b>25044.65</b><span class="g">+58.25 (0.23%)</span></div><div class="ic">BANKNIFTY<b>59741.25</b><span class="g">+890.60 (1.51%)</span></div><div class="ic">SENSEX<b>81106.65</b><span class="g">+107.25 (0.13%)</span></div></div>
+  <div class="hs" id="hstrip"></div>
+  <div class="sec">NIFTY weekly options</div>
+  <div id="opts"></div>
+  <p class="foot">Dummy prices for a concept prototype. Lot size 65. No real trades.<br><button class="lnk" id="reset">Reset demo</button></p>
+</section>
+
+<section class="scr" id="s-trade">
+  <div class="top"><button class="ib" id="tback" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+  <div class="kv" style="align-items:flex-start"><div><div style="font-size:21px;font-weight:500;line-height:1.25" id="tn"></div><div style="font-size:24px;margin-top:4px" id="tl"></div></div><span class="bpill">Buy</span></div>
+  <div style="margin:22px 0 4px"><div class="sg d" id="sgp"><button data-v="Normal" class="on">Normal</button><button data-v="Intraday">Intraday</button></div></div>
+  <div class="fr"><span>Quantity</span><div class="stp"><button id="lm" aria-label="Fewer lots">−</button><div><b id="qt">65</b><small id="lt">1 lot</small></div><button id="lp" aria-label="More lots">+</button></div></div>
+  <div class="fr"><span>Order type</span><div class="sg w"><button>Market</button><button class="on">Limit</button><button>Trigger</button></div></div>
+  <div class="fr"><span>Price <b>Limit</b></span><input class="pin" id="pl" readonly></div>
+  <div class="fr"><span>Validity</span><div class="sg w"><button class="on">Day</button><button>GTT</button></div></div>
+  <div class="slc"><div class="kv"><div style="display:flex;align-items:center;gap:12px"><span class="slb">SL</span><b style="font-weight:500;font-size:17px">Stop Loss</b></div><label class="tg"><input type="checkbox" id="slt" aria-label="Stop loss"><b></b></label></div>
+   <div class="kv" id="slrow" style="display:none;margin-top:14px"><span style="color:var(--muted)">Trigger price</span><div class="amt" style="height:46px;width:140px;border-radius:14px"><span style="font-size:16px">₹</span><input id="slp" type="text" inputmode="decimal" style="font-size:18px;text-align:right"></div></div></div>
+  <div class="card" style="margin-top:14px;border-color:var(--accent)">
+    <div class="kv"><span style="font-size:14px;font-weight:500">Your plan today <span class="new">NEW</span></span><b id="rk" style="font-weight:500;font-size:19px"></b></div>
+    <div style="color:var(--muted);font-size:12.5px;margin-top:2px">Planned risk on this trade</div>
+    <div class="rb" id="rbar"><i id="r1" style="background:#d63b3b"></i><i id="r2" style="background:#e0a030"></i><i id="r3" style="background:var(--accent)"></i><u id="rl"></u></div>
+    <div class="lg"><span><i style="background:#d63b3b"></i>Lost today</span><span><i style="background:#e0a030"></i>Open risk</span><span><i style="background:var(--accent)"></i>This trade</span></div>
+    <div style="color:var(--muted);font-size:13px;margin-top:10px" id="rinfo"></div>
+    <div style="font-size:14px;margin-top:8px;line-height:1.45" id="rmsg"></div>
+    <div style="color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.4" id="rent"></div>
+  </div>
+  <div class="ft"><div><div>Req margin: <b id="fm"></b></div><div>Charges: <b>₹10.75</b></div></div><button class="buy" id="buy">Buy</button></div>
+  <div class="bt"><div>Pay (Est.)<b id="pay"></b></div><div>Max Loss<b class="r" id="ml"></b></div><div>Max Profit<b class="g">Unlimited</b></div></div>
+  <p class="foot" style="margin-top:14px">Max Loss is the full premium. Planned risk uses your stop-loss and assumes it fills. A guide, not a guarantee.</p>
+</section>
+
+<section class="scr" id="s-orders">
+  <div class="ttl">Orders</div>
+  <div id="ostrip"></div>
+  <div id="olist"></div>
+</section>
+
+<nav class="nv" id="nav"><button data-go="home" class="on"><i>&#8962;</i>Home</button><button data-go="x"><i>&#9734;</i>Watchlist</button><button data-go="x"><i>&#8644;</i>Trade</button><button data-go="orders"><i>&#9636;</i>Orders</button><button data-go="x"><i>&#9707;</i>Portfolio</button></nav>
+<div class="toast" id="toast"></div>
+
+<section class="scr" id="s-limit">
+  <div class="ok"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <div class="center"><h1>You’ve completed today’s entries</h1><p class="sub" id="lsub"></p></div>
+  <div class="card" style="padding:6px 18px" id="lcard"></div>
+  <button class="cta" id="lpos">View my positions</button>
+  <button class="cta ghost" id="lhome">Back to home</button>
+  <div class="center" style="margin-top:18px"><button class="lnk" id="ledit">Something urgent? Edit my plan ›</button></div>
+</section>
+
+<section class="scr" id="s-edit">
+  <div class="top"><button class="ib" id="eback" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+  <p class="kick">Change your plan</p>
+  <h1>Daily entry limit</h1>
+  <p class="sub">You planned <b id="eo"></b> fresh entries a day. Lowering it applies instantly. Raising it asks for a reason and a short pause, so it’s a deliberate choice.</p>
+  <div class="amt"><input id="en" type="text" inputmode="numeric" placeholder="New limit" autocomplete="off"></div>
+  <div class="sub" style="margin:18px 0 8px">Why the change? (needed to raise)</div>
+  <div class="chips" id="ereasons" style="margin-top:0"></div>
+  <div class="err" id="eerr"></div>
+  <button class="cta" id="eok">Update plan</button>
+</section>
+
+<section class="scr" id="s-pp">
+  <div class="top"><button class="ib" id="ppback" aria-label="Back"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span style="color:var(--muted);font-size:19px">?</span></div>
+  <h1 class="pph"><svg width="22" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 3v6c0 5-3.4 9.2-8 11-4.6-1.8-8-6-8-11V5l8-3z"/></svg> P&amp;L Protect</h1>
+
+  <div class="gauge">
+    <div class="glab"><span>Stop</span><span>Total P&amp;L</span><span>Target</span></div>
+    <div class="gtr"><div class="bar"></div><div class="fill" id="gfill"></div><div class="end" id="gl"></div><div class="end" id="gr"></div><div class="mk" id="gmk"><i></i><u></u></div></div>
+    <div class="gval"><b id="gvs" style="font-weight:500">Not Set</b><b id="gvp" style="font-weight:500">₹0</b><b id="gvt" style="font-weight:500">Not Set</b></div>
+  </div>
+
+  <div class="ppc">
+    <div class="hd"><b>P&amp;L Stop</b><label class="tg"><input type="checkbox" id="pps" checked aria-label="P&L Stop"><b></b></label></div>
+    <div id="ppsbody">
+      <div class="ppr"><span style="color:var(--muted)">Set as</span><div class="sgm" id="ppmode"><button data-v="amt" class="on">₹ Amount</button><button data-v="pct">% of capital</button></div></div>
+      <div class="ppr" id="ppcaprow" style="display:none"><span>Trading capital</span><div class="nb"><span>₹</span><input id="ppcap" type="text" inputmode="numeric" placeholder="0" autocomplete="off"></div></div>
+      <div class="ppr"><span>Exit if P&amp;L goes below</span><div class="nb"><span id="ppu1">₹</span><input id="ppstop" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></div></div>
+      <div style="color:var(--muted);font-size:13px;text-align:right;margin-top:6px;min-height:16px" id="ppcalc1"></div>
+      <label class="cbx"><input type="checkbox" id="pptrail">Trailing P&amp;L Stop</label>
+      <div style="color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.45" id="pptrailnote" hidden>The stop follows your best P&amp;L of the day, staying this far below its peak.</div>
+    </div>
+  </div>
+
+  <div class="ppc">
+    <div class="hd"><b>P&amp;L Target</b><label class="tg"><input type="checkbox" id="ppt" aria-label="P&L Target"><b></b></label></div>
+    <div id="pptbody" hidden>
+      <div class="ppr"><span>Exit if P&amp;L goes above</span><div class="nb"><span id="ppu2">₹</span><input id="pptgt" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></div></div>
+      <div style="color:var(--muted);font-size:13px;text-align:right;margin-top:6px;min-height:16px" id="ppcalc2"></div>
+    </div>
+  </div>
+
+  <div class="ppc">
+    <div class="hd"><b>Advanced settings</b><span style="color:var(--muted)">⌃</span></div>
+    <div class="ppr"><span>Enable Kill Switch after trigger</span><label class="tg"><input type="checkbox" id="ppkill" aria-label="Kill Switch after trigger"><b></b></label></div>
+  </div>
+
+  <div class="info"><div><span>•</span><span id="ppinfo1">No positions today. P&amp;L Protect auto-enables after you take a position.</span></div><div><span>•</span><span>Orders are sent to exchange as market orders once P&amp;L Protect is triggered.</span></div></div>
+  <div class="err" id="pperr"></div>
+  <button class="cta" id="ppsave">Set P&amp;L Protect</button>
+  <p class="foot">Concept screen for this prototype, rebuilt from SAHI’s design. The % option is the proposed add-on.</p>
+</section>
+
+<section class="scr" id="s-done">
+  <div class="ok"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <div class="center"><h1>Plan set</h1><p class="sub" id="dsum"></p></div>
+  <button class="cta" id="home">Back to profile</button>
+</section>
+
+</div>
+<script>
+var S={wk:0,mt:0,days:{Mon:1,Tue:1,Wed:1,Thu:1,Fri:1},daily:0,target:0,ppOn:true,trail:false,kill:false,killed:false,saved:false,lock:false,step:0,fromReview:false};
+var $=function(i){return document.getElementById(i)};
+var f=function(n){return '₹'+Math.round(n).toLocaleString('en-IN')};
+var num=function(v){return parseInt(String(v).replace(/[^0-9]/g,''),10)||0};
+function show(id){document.querySelectorAll('.scr').forEach(function(s){s.classList.toggle('on',s.id===id)});window.scrollTo(0,0);var n=$('nav');if(n){n.style.display=(id==='s-home'||id==='s-orders')?'flex':'none';var cur=id==='s-home'?'home':id==='s-orders'?'orders':'';n.querySelectorAll('button').forEach(function(b){b.className=b.dataset.go===cur?'on':''})}}
+function chips(el,vals,cur,fn,fmt){el.innerHTML='';vals.forEach(function(v){var b=document.createElement('button');b.className='chip'+(cur()===v?' on':'');b.textContent=fmt?fmt(v):v;b.onclick=function(){fn(v)};el.appendChild(b)})}
+function drawChips(){
+ chips($('wk-chips'),[2500,5000,10000,20000],function(){return S.wk},function(v){S.wk=v;$('wk').value=v.toLocaleString('en-IN');drawChips()},f);
+ chips($('mt-chips'),[3,5,8,10],function(){return S.mt},function(v){S.mt=v;$('mt').value=v;drawChips()});
+}
+function drawDays(){var el=$('days');el.innerHTML='';Object.keys(S.days).forEach(function(d){var b=document.createElement('button');b.className='chip'+(S.days[d]?' on':'');b.textContent=d;b.onclick=function(){S.days[d]=S.days[d]?0:1;drawDays()};el.appendChild(b)})}
+function dayList(){return Object.keys(S.days).filter(function(d){return S.days[d]})}
+function go(i){
+ S.step=i;
+ document.querySelectorAll('.st').forEach(function(s){s.hidden=+s.dataset.i!==i});
+ document.querySelectorAll('#prog i').forEach(function(p,k){p.className=k<=(i===0?0:i-1)?'d':''});
+ $('stepno').textContent='Step '+(i===0?1:i)+' of 3';
+ $('next').textContent=i===3?'Review plan':'Continue';
+ 
+ ['e0','e2','e3'].forEach(function(e){$(e).textContent=''});
+ show('s-step');
+}
+$('open-plan').onclick=function(){if(S.saved){reviewScr()}else{go(0)}};
+$('wk').oninput=function(){S.wk=num(this.value);this.value=S.wk?S.wk.toLocaleString('en-IN'):'';drawChips()};
+$('mt').oninput=function(){S.mt=num(this.value);this.value=S.mt||'';drawChips()};
+
+$('back').onclick=function(){if(S.step===0){show('s-profile')}else{go(S.step===2?0:2)}};
+$('next').onclick=function(){
+ var i=S.step,e=$('e'+i);e.style.color='';
+ if(i===0){
+  if(!S.wk){e.textContent='Enter your weekly risk cap.';return}
+  if(S.daily&&S.wk<S.daily){e.textContent='Your weekly cap can’t sit below your daily limit of '+f(S.daily)+'. Adjust your daily stop in P&L Protect first.';return}
+ }
+ if(i===2&&(S.mt<1||S.mt>50)){e.textContent='Enter a number between 1 and 50.';return}
+ if(i===3&&!dayList().length){e.textContent='Pick at least one day.';return}
+ if(S.fromReview){S.fromReview=false;reviewScr();return}
+ if(i<3){go(i===0?2:3)}else{reviewScr()}
+};
+function reviewScr(){
+ var d=dayList();
+ $('rv').innerHTML=
+  row('Weekly risk cap',f(S.wk),0)+
+  
+  row('Fresh entries per day',S.mt,2)+
+  row('Trading days',d.join(', '),3)+
+  '<div class="rv"><span>Entries planned this week</span><div>'+(S.mt*d.length)+'</div></div>';
+ document.querySelectorAll('#rv .ed').forEach(function(b){b.onclick=function(){if(S.saved&&+b.dataset.i===2){openEdit('s-review');return}S.fromReview=true;go(+b.dataset.i)}});
+ $('lock').checked=true;
+ show('s-review');
+}
+function row(l,v,i){return '<div class="rv"><span>'+l+'</span><div>'+v+' &nbsp;<button class="lnk ed" data-i="'+i+'">Edit</button></div></div>'}
+$('rback').onclick=function(){if(S.saved){show('s-profile')}else{go(3)}};
+$('rcancel').onclick=function(){show('s-profile')};
+$('commit').onclick=function(){
+ S.lock=$('lock').checked;S.saved=true;
+ var d=dayList();
+ $('dsum').textContent='Week of 16–20 Nov: weekly cap '+f(S.wk)+', up to '+S.mt+' fresh entr'+(S.mt===1?'y':'ies')+' a day across '+d.length+' day'+(d.length===1?'':'s')+'. Commitment lock is '+(S.lock?'on':'off')+'.';
+ $('plan-sub').innerHTML='<span class="dot"></span>Active · Week of 16–20 Nov · Tap to review';
+ $('newtag').style.display='none';
+ show('s-done');
+};
+$('home').onclick=function(){show('s-profile')};
+var LOT=65,OPT=[{n:'NIFTY 17 Nov 25000 Call',l:112.4,c:3.2},{n:'NIFTY 17 Nov 25050 Call',l:88.15,c:2.4},{n:'NIFTY 17 Nov 25100 Call',l:64.3,c:1.1},{n:'NIFTY 17 Nov 24950 Put',l:70.55,c:-2.8},{n:'NIFTY 17 Nov 25000 Put',l:95.2,c:-3.1},{n:'NIFTY 17 Nov 25050 Put',l:121.6,c:-3.6}];
+var P={open:[],closed:[],real:0,ent:0,peak:0},sel=null,lots=1,slv=0,tt;
+var r2=function(n){return Math.round(n*100)/100};
+var sg=function(n){return (n<0?'-':'+')+f(Math.abs(n))};
+function lossUsed(){return Math.max(0,-P.real)}
+function openRisk(){return P.open.reduce(function(a,p){return a+p.risk},0)}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(function(){t.style.display='none'},2600)}
+function stripHtml(){
+ if(!S.saved)return '<div class="h-t"><b>Plan before you trade</b><span>Set your weekly risk cap and daily entries in a minute.</span></div><button class="chip on" id="hp">Start</button>';
+ var u=lossUsed(),l=S.daily;
+ if(!l)return '<div class="h-t"><b>Your plan today</b><span>Entries '+P.ent+' of '+S.mt+' · Daily stop not set in P&amp;L Protect</span></div>';
+ return '<div class="h-t"><b>Your plan today</b><span>Entries '+P.ent+' of '+S.mt+' · Loss budget '+f(u)+' of '+f(l)+'</span><div class="mbar"><i style="width:'+Math.min(100,u/l*100)+'%"></i></div></div>';
+}
+function renderHome(){
+ $('hstrip').innerHTML=stripHtml();
+ var hp=$('hp');if(hp)hp.onclick=function(){go(0)};
+ $('opts').innerHTML=OPT.map(function(o,i){return '<button class="h-o" data-i="'+i+'"><div><b>'+o.n+'</b><small>Weekly expiry</small></div><div>₹'+o.l.toFixed(2)+'<br><small class="'+(o.c>=0?'g':'r')+'">'+(o.c>=0?'+':'')+o.c.toFixed(2)+'%</small></div></button>'}).join('');
+ document.querySelectorAll('.h-o').forEach(function(b){b.onclick=function(){openTrade(+b.dataset.i)}});
+}
+var prod='Normal',slOn=false;
+function setProd(){document.querySelectorAll('#sgp button').forEach(function(x){x.className=x.dataset.v===prod?'on':''})}
+function openTrade(i){
+ if(limitHit()){showLimit();return}
+ sel=OPT[i];lots=1;prod='Normal';slOn=false;slv=r2(Math.round(sel.l*0.9*10)/10);
+ $('tn').textContent=sel.n;
+ $('tl').innerHTML=sel.l.toFixed(2)+' <span class="'+(sel.c>=0?'g':'r')+'" style="font-size:16px">('+(sel.c>=0?'+':'')+sel.c.toFixed(2)+'%)</span>';
+ $('pl').value=sel.l.toFixed(2);$('slp').value=slv;$('slt').checked=false;$('slrow').style.display='none';
+ setProd();show('s-trade');upd();
+}
+function upd(){
+ var q=lots*LOT,prem=sel.l*q,has=slOn&&slv>0&&slv<sel.l,risk=has?(sel.l-slv)*q:prem;
+ var loss=lossUsed(),op=openRisk(),lim=S.daily,left=lim-loss-op,sc=Math.max(lim,loss+op+risk);
+ $('qt').textContent=q;$('lt').textContent=lots+(lots===1?' lot':' lots');
+ $('rk').textContent=f(risk);$('fm').textContent=f(prem);$('pay').textContent=f(prem);$('ml').textContent=f(prem);
+ $('r1').style.width=loss/sc*100+'%';$('r2').style.width=op/sc*100+'%';$('r3').style.width=risk/sc*100+'%';$('rl').style.left=(lim/sc*100)+'%';$('rl').style.display=lim?'block':'none';
+ $('rinfo').textContent=lim?'Daily limit '+f(lim)+' · Left before this trade '+f(Math.max(0,left)):'Daily stop not set in P&L Protect';
+ var m=$('rmsg');
+ if(slOn&&slv>=sel.l){m.textContent='Your stop-loss needs to sit below the entry price for a buy.';m.style.color='var(--err)'}
+ else if(!slOn){m.textContent='Stop Loss is off, so planned risk can’t be calculated. Showing premium at risk instead.';m.style.color='var(--muted)'}
+ else if(!lim){m.textContent='Set a daily stop in P&L Protect to see this trade against your day.';m.style.color='var(--muted)'}
+ else if(risk<=left){m.textContent='Uses '+Math.round(left>0?risk/left*100:0)+'% of the '+f(left)+' you have left today.';m.style.color='var(--text)'}
+ else{m.textContent='This goes '+f(risk-left)+' past your daily limit. Reduce lots or tighten the stop-loss.';m.style.color='#b7791f'}
+ var e=$('rent'),t;
+ if(!S.saved)t='No weekly plan yet.'+(lim?' This shows your P&L Protect daily stop only.':'');
+ else t='Entry '+(P.ent+1)+' of '+S.mt+' planned for today.';
+ if(prod==='Normal')t+=' Normal orders can be carried forward. A carried position stays in your open risk on later days.';
+ e.textContent=t;
+}
+$('sgp').querySelectorAll('button').forEach(function(b){b.onclick=function(){prod=b.dataset.v;setProd();upd()}});
+document.querySelectorAll('#s-trade .sg.w').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.onclick=function(){g.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on')}})});
+$('lm').onclick=function(){if(lots>1){lots--;upd()}};
+$('lp').onclick=function(){if(lots<10){lots++;upd()}};
+$('slt').onchange=function(){slOn=this.checked;$('slrow').style.display=slOn?'flex':'none';upd()};
+$('slp').oninput=function(){slv=parseFloat(this.value)||0;upd()};
+$('tback').onclick=function(){show('s-home')};
+$('buy').onclick=function(){
+ var has=slOn&&slv>0&&slv<sel.l;
+ if(slOn&&slv>=sel.l){toast('Fix your stop-loss first.');return}
+ if(limitHit()){showLimit();return}
+ var q=lots*LOT;
+ P.open.push({n:sel.n,e:sel.l,l:sel.l,sl:has?slv:0,q:q,prod:prod==='Normal'?'Carry-forward':'Intraday',risk:has?(sel.l-slv)*q:sel.l*q});P.ent++;
+ toast('Order placed (simulated)');renderOrders();show('s-orders');
+};
+function renderOrders(){
+ $('ostrip').innerHTML=S.saved||P.open.length?'<div class="hs" style="margin-top:0">'+stripHtml()+'</div>':'';
+ var hp=$('hp');if(hp)hp.onclick=function(){go(0)};
+ var un=P.open.reduce(function(a,p){return a+(p.l-p.e)*p.q},0),h='';
+ if(!P.open.length&&!P.closed.length){$('olist').innerHTML='<div class="empty">You don’t have any orders</div>';return}
+ h+='<div class="kv" style="margin:16px 2px 0"><span style="color:var(--muted)">Realised today</span><b class="'+(P.real<0?'r':'g')+'" style="font-weight:500">'+sg(P.real)+'</b></div>';
+ h+='<div class="kv" style="margin:6px 2px 0"><span style="color:var(--muted)">Open P&amp;L</span><b class="'+(un<0?'r':'g')+'" style="font-weight:500">'+sg(un)+'</b></div>';
+ if(P.open.length)h+='<div class="sec">Open positions</div>';
+ P.open.forEach(function(p,k){var pl=(p.l-p.e)*p.q;h+='<div class="pc"><div class="kv"><b>'+p.n+'</b><b class="'+(pl<0?'r':'g')+'">'+sg(pl)+'</b></div><div class="m">'+(p.prod||'Intraday')+' · Qty '+p.q+' · Avg ₹'+p.e.toFixed(2)+' · LTP ₹'+p.l.toFixed(2)+'</div><div class="m">'+(p.sl?'SL ₹'+p.sl.toFixed(2)+' · Planned risk '+f(p.risk):'No SL · Premium at risk '+f(p.risk))+'</div><button class="chip" data-k="'+k+'">Exit position</button></div>'});
+ if(P.closed.length){h+='<div class="sec">Closed today</div>';P.closed.slice().reverse().forEach(function(c){h+='<div class="pc"><div class="kv"><b>'+c.n+'</b><b class="'+(c.pl<0?'r':'g')+'">'+sg(c.pl)+'</b></div><div class="m">Qty '+c.q+' · '+c.note+'</div></div>'})}
+ $('olist').innerHTML=h;
+ document.querySelectorAll('#olist .chip').forEach(function(b){b.onclick=function(){closePos(+b.dataset.k,'Exited at market')}});
+}
+function closePos(k,note,px){var p=P.open[k];if(!p)return;var x=px||p.l,pl=(x-p.e)*p.q;P.real+=pl;P.closed.push({n:p.n,q:p.q,pl:pl,note:note});P.open.splice(k,1);renderOrders();renderHome()}
+setInterval(function(){
+ if(P.open.length){
+  for(var k=P.open.length-1;k>=0;k--){var p=P.open[k];p.l=Math.max(0.05,r2(p.l*(1+(Math.random()-0.5)*0.05)));if(p.sl&&p.l<=p.sl){toast(p.n+' hit your stop-loss');closePos(k,'Stop-loss hit',p.sl)}}
+  ppCheck();
+  if($('s-orders').classList.contains('on'))renderOrders();
+ }
+ if($('s-pp').classList.contains('on'))ppDraw();
+},2500);
+$('nav').querySelectorAll('button').forEach(function(b){b.onclick=function(){var g=b.dataset.go;if(g==='home'){renderHome();show('s-home')}else if(g==='orders'){renderOrders();show('s-orders')}else toast('Not part of this prototype')}});
+$('to-prof').onclick=function(){show('s-profile')};
+$('reset').onclick=function(){
+ S={wk:0,mt:0,days:{Mon:1,Tue:1,Wed:1,Thu:1,Fri:1},daily:0,target:0,ppOn:true,trail:false,kill:false,killed:false,saved:false,lock:false,step:0,fromReview:false};
+ P={open:[],closed:[],real:0,ent:0,peak:0};sel=null;lots=1;slv=0;prod='Normal';slOn=false;ppMode='amt';clearInterval(eTimer);
+ ['wk','mt','ppcap','ppstop','pptgt'].forEach(function(i){$(i).value=''});
+ $('pps').checked=true;$('ppt').checked=false;$('pptrail').checked=false;$('ppkill').checked=false;$('pperr').textContent='';
+ $('plan-sub').textContent='Set your weekly risk cap and trade count before the market opens';$('newtag').style.display='';
+ ppSub();ppDraw();drawChips();drawDays();renderHome();renderOrders();show('s-home');toast('Demo reset. Start fresh.');
+};
+function limitHit(){return S.killed||(S.saved&&P.ent>=S.mt)}
+function unreal(){return P.open.reduce(function(a,p){return a+(p.l-p.e)*p.q},0)}
+function totalPL(){return P.real+unreal()}
+function closeAll(note){for(var k=P.open.length-1;k>=0;k--)closePos(k,note)}
+function ppCheck(){
+ if(!S.ppOn||!P.open.length)return;
+ var t=totalPL();if(t>P.peak)P.peak=t;
+ if(S.daily){var lvl=S.trail?P.peak-S.daily:-S.daily;
+  if(t<=lvl){closeAll('Squared off by P&L Protect');toast('P&L Protect: stop hit at '+sg(t)+'. All positions squared off.');if(S.kill)S.killed=true;renderHome();return}}
+ if(S.target&&t>=S.target){closeAll('Squared off by P&L Protect');toast('P&L Protect: target hit at '+sg(t)+'. All positions squared off.');if(S.kill)S.killed=true;renderHome()}
+}
+function showLimit(){
+ if(S.killed){$('lsub').textContent='P&L Protect squared off your positions and the Kill Switch is on, so new entries are off for the rest of the day. You can still exit or reduce anything you hold.';
+  $('lcard').innerHTML='<div class="rv"><span>Realised today</span><div>'+sg(P.real)+'</div></div><div class="rv"><span>Daily stop</span><div>'+(S.daily?f(S.daily):'Not set')+'</div></div><div class="rv"><span>Entries today</span><div>'+P.ent+(S.saved?' of '+S.mt:'')+'</div></div>';
+  show('s-limit');return}
+ $('lsub').textContent='You planned '+S.mt+' fresh entr'+(S.mt===1?'y':'ies')+' a day, and you’ve taken '+P.ent+'. New entries are paused until the next trading day. Exits and risk reduction still work.';
+ $('lcard').innerHTML='<div class="rv"><span>Entries today</span><div>'+P.ent+' of '+S.mt+'</div></div><div class="rv"><span>Loss budget used</span><div>'+f(lossUsed())+(S.daily?' of '+f(S.daily):'')+'</div></div><div class="rv"><span>Open positions</span><div>'+P.open.length+'</div></div>';
+ show('s-limit');
+}
+$('lpos').onclick=function(){renderOrders();show('s-orders')};
+$('lhome').onclick=function(){renderHome();show('s-home')};
+$('ledit').onclick=function(){openEdit('s-limit')};
+var eFrom='s-home',eReason='',eStage=0,eTimer;
+function drawReasons(){var el=$('ereasons');el.innerHTML='';['Hedging an open position','Genuine emergency','My plan was too tight','Other'].forEach(function(r){var b=document.createElement('button');b.className='chip'+(eReason===r?' on':'');b.textContent=r;b.onclick=function(){eReason=r;drawReasons()};el.appendChild(b)})}
+function openEdit(from){eFrom=from;eReason='';eStage=0;clearInterval(eTimer);$('eo').textContent=S.mt;$('en').value='';$('eerr').textContent='';$('eok').textContent='Update plan';drawReasons();show('s-edit')}
+$('en').oninput=function(){this.value=num(this.value)||'';eStage=0;clearInterval(eTimer);$('eok').textContent='Update plan'};
+$('eback').onclick=function(){clearInterval(eTimer);show(eFrom)};
+function applyEdit(n){S.mt=n;toast('Plan updated: '+n+' fresh entr'+(n===1?'y':'ies')+' a day');renderHome();renderOrders();if(eFrom==='s-review'){reviewScr()}else{show('s-home')}}
+$('eok').onclick=function(){
+ var n=num($('en').value),er=$('eerr');er.textContent='';
+ if(n<1||n>50){er.textContent='Enter a number between 1 and 50.';return}
+ if(n===S.mt){er.textContent='That’s already your limit.';return}
+ if(n<S.mt){applyEdit(n);return}
+ if(!eReason){er.textContent='Pick a reason so you can look back on this later.';return}
+ if(eStage===0){eStage=1;var s=5;$('eok').textContent='Confirm in '+s+'s';eTimer=setInterval(function(){s--;if(s>0){$('eok').textContent='Confirm in '+s+'s'}else{clearInterval(eTimer);eStage=2;$('eok').textContent='Confirm change'}},1000);return}
+ if(eStage===2)applyEdit(n);
+};
+document.querySelector('#s-profile .ib').onclick=function(){renderHome();show('s-home')};
+var ppMode='amt';
+function ppVals(){var cap=num($('ppcap').value),s=parseFloat($('ppstop').value)||0,t=parseFloat($('pptgt').value)||0,pc=ppMode==='pct';
+ return{cap:cap,pc:pc,sa:Math.round(pc?cap*s/100:s),ta:Math.round(pc?cap*t/100:t),son:$('pps').checked,ton:$('ppt').checked}}
+function ppGauge(){
+ var c=ppVals(),st=c.son?c.sa:0,tg=c.ton?c.ta:0,t=totalPL();
+ $('gvs').textContent=st?'-'+f(st):'Not Set';$('gvs').style.color=st?'#d63b3b':'var(--muted)';
+ $('gvt').textContent=tg?f(tg):'Not Set';$('gvt').style.color=tg?'#1e9e5a':'var(--muted)';
+ $('gvp').textContent=sg(t);$('gvp').style.color=t<0?'#d63b3b':t>0?'#1e9e5a':'var(--text)';
+ var lo=-(st||1000),hi=tg||(st||1000),pos=Math.min(100,Math.max(0,(t-lo)/(hi-lo)*100));
+ $('gmk').style.left=pos+'%';
+ $('gl').style.left='0';$('gl').style.background=st?'#d63b3b':'var(--border)';
+ $('gr').style.right='0';$('gr').style.background=tg?'#1e9e5a':'var(--border)';
+ var fl=$('gfill'),mid=(0-lo)/(hi-lo)*100;
+ if(t<0){fl.style.left=pos+'%';fl.style.width=Math.max(0,mid-pos)+'%';fl.style.background='linear-gradient(90deg,#d63b3b,rgba(214,59,59,.10))'}
+ else{fl.style.left=mid+'%';fl.style.width=Math.max(0,pos-mid)+'%';fl.style.background='linear-gradient(90deg,rgba(30,158,90,.10),#1e9e5a)'}
+}
+function ppDraw(){
+ var pc=ppMode==='pct',c=ppVals();
+ $('ppsbody').hidden=!c.son;$('pptbody').hidden=!c.ton;
+ $('ppcaprow').style.display=pc?'flex':'none';$('ppu1').textContent=pc?'%':'₹';$('ppu2').textContent=pc?'%':'₹';
+ $('ppcalc1').textContent=pc&&c.cap&&c.sa?'= '+f(c.sa):'';
+ $('ppcalc2').textContent=pc&&c.cap&&c.ta?'= '+f(c.ta):'';
+ $('pptrailnote').hidden=!$('pptrail').checked;
+ $('ppinfo1').textContent=P.open.length?P.open.length+' open position'+(P.open.length>1?'s':'')+'. P&L Protect is watching your total P&L live and squares off when a level is hit.':'No positions today. P&L Protect auto-enables after you take a position.';
+ document.querySelectorAll('#ppmode button').forEach(function(b){b.className=b.dataset.v===ppMode?'on':''});
+ ppGauge();
+}
+function ppSub(){$('pp-sub').textContent=(S.ppOn&&(S.daily||S.target))?'Active · Stop '+(S.daily?f(S.daily):'off')+(S.target?' · Target '+f(S.target):''):'Set stop, target levels on positions P&L'}
+$('open-pp').onclick=function(){$('pperr').textContent='';ppDraw();show('s-pp')};
+$('ppback').onclick=function(){show('s-profile')};
+['pps','ppt','pptrail','ppkill'].forEach(function(i){$(i).onchange=ppDraw});
+document.querySelectorAll('#ppmode button').forEach(function(b){b.onclick=function(){ppMode=b.dataset.v;ppDraw()}});
+$('ppcap').oninput=function(){var n=num(this.value);this.value=n?n.toLocaleString('en-IN'):'';ppDraw()};
+$('ppstop').oninput=ppDraw;$('pptgt').oninput=ppDraw;
+$('ppsave').onclick=function(){
+ var er=$('pperr'),c=ppVals();er.textContent='';
+ if(!c.son&&!c.ton){S.ppOn=false;S.daily=0;S.target=0;ppSub();renderHome();toast('P&L Protect is off');show('s-profile');return}
+ if(c.pc&&!c.cap){er.textContent='Enter your trading capital to use percentages.';return}
+ if(c.son&&!c.sa){er.textContent='Enter a stop level.';return}
+ if(c.ton&&!c.ta){er.textContent='Enter a target level, or switch P&L Target off.';return}
+ if(S.saved&&c.son&&c.sa>S.wk){er.textContent='Your daily stop can’t exceed your weekly cap of '+f(S.wk)+'. Raise your weekly plan first, or lower the stop.';return}
+ S.ppOn=true;S.daily=c.son?c.sa:0;S.target=c.ton?c.ta:0;S.trail=$('pptrail').checked;S.kill=$('ppkill').checked;P.peak=Math.max(0,totalPL());
+ ppSub();renderHome();toast('P&L Protect set'+(S.daily?' · stop '+f(S.daily):'')+(S.target?' · target '+f(S.target):''));show('s-profile');
+};
+drawChips();drawDays();renderHome();renderOrders();show('s-home');
+</script>
+</body>
+</html>
